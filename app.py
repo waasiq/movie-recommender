@@ -8,9 +8,10 @@ similarityURL = "https://drive.google.com/u/1/uc?id=1NB6qrgPhZgr7yL1PLW2AmI_kjj-
 similarityRES = urlopen(similarityURL)
 similarity = pickle.load(similarityRES)
 
-movieListURL = "https://drive.google.com/u/1/uc?id=1YE_c9Bgjq5DU5EH1Oy4lQd1CVeBjmG0h&export=download"
+movieListURL = "https://drive.google.com/u/1/uc?id=1YE_c9Bgjq5DU5EH1Oy4lQd1CVeBjmG0h&export=download&confirm=t&uuid=ab29cdc5-00a8-447b-98c1-d0d838679ca6&at=AKKF8vzErattqXmO2Zu4NtnWH2rj:1687363427387"
 movieListURL = urlopen(movieListURL)
 moviesList = pickle.load(movieListURL)
+
 titlesList = moviesList['title']
 
 st.title('Movie Recommender System')
