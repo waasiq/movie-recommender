@@ -1,15 +1,22 @@
 import pickle
 import streamlit as st
 import requests 
+import io
+from urllib.request import urlopen
 
-movies_list = pickle.load(open('movies_list.pkl', 'rb'))
-titles_list = movies_list['title']
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+similarityURL = "https://drive.google.com/u/1/uc?id=1NB6qrgPhZgr7yL1PLW2AmI_kjj-Z0X1U&export=download&confirm=t&uuid=ab29cdc5-00a8-447b-98c1-d0d838679ca6&at=AKKF8vzErattqXmO2Zu4NtnWH2rj:1687363427387"
+similarityRES = urlopen(similarityURL)
+similarity = pickle.load(similarityRES)
+
+movieListURL = "https://drive.google.com/u/1/uc?id=1YE_c9Bgjq5DU5EH1Oy4lQd1CVeBjmG0h&export=download"
+movieListURL = urlopen(movieListURL)
+moviesList = pickle.load(movieListURL)
+titlesList = moviesList['title']
 
 st.title('Movie Recommender System')
 selected_movie = st.selectbox(
     'Which movie would you like to get recommendations for?',  
-    titles_list.values)
+    titlesList.values)
 
 def fetchPoster(movie_id):
     url = "https://api.themoviedb.org/3/movie/{}?api_key=3b75df80a2ffd6aa0e2fd29724231936&language=en-US".format(movie_id)
@@ -20,16 +27,16 @@ def fetchPoster(movie_id):
     return full_path
 
 def recommend(selected_movie):
-    movie_index = movies_list[movies_list['title'] == selected_movie].index[0]
+    movie_index = moviesList[moviesList['title'] == selected_movie].index[0]
     distances = similarity[movie_index]
     re_movie_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x:x[1])[1:6]
     
     recommended_movies = []
     recommended_movies_posters = []  
     for i in re_movie_list:
-        movie_id = movies_list.iloc[i[0]].movie_id
+        movie_id = moviesList.iloc[i[0]].movie_id
         recommended_movies_posters.append(fetchPoster(movie_id))
-        recommended_movies.append(movies_list.iloc[i[0]].title)
+        recommended_movies.append(moviesList.iloc[i[0]].title)
 
     return  recommended_movies,recommended_movies_posters
 
